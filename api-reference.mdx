@@ -1,0 +1,198 @@
+---
+title: API Reference
+description: Detailed documentation of ObitoX classes, methods, and parameters for advanced usage and custom integrations.
+---
+
+## Core SDK Class
+
+Initialize the ObitoX SDK with your provider credentials. You create an instance of the `ObitoX` class, passing configuration for your storage provider.
+
+<CodeGroup tabs="JavaScript,TypeScript">
+```javascript
+const obitoX = new ObitoX({
+  provider: 's3',
+  accessKeyId: 'YOUR_ACCESS_KEY',
+  secretAccessKey: 'YOUR_SECRET_KEY',
+  region: 'us-east-1',
+  bucket: 'my-storage-bucket'
+});
+```
+
+```typescript
+interface ObitoXConfig {
+  provider: 's3' | 'gcs' | 'r2' | 'supabase';
+  accessKeyId?: string;
+  secretAccessKey?: string;
+  region?: string;
+  bucket: string;
+  endpoint?: string;
+}
+
+const obitoX: ObitoX = new ObitoX({
+  provider: 'r2',
+  accountId: 'YOUR_ACCOUNT_ID',
+  accessKeyId: 'YOUR_ACCESS_KEY',
+  secretAccessKey: 'YOUR_SECRET_KEY',
+  bucket: 'my-r2-bucket'
+} as ObitoXConfig);
+```
+</CodeGroup>
+
+Use `<ParamField>` components to document constructor options.
+
+<ParamField path="provider" param-type="string" required="true">
+  Storage provider identifier. Supports `s3`, `gcs`, `r2`, `supabase`.
+</ParamField>
+
+<ParamField path="bucket" param-type="string" required="true">
+  Your storage bucket name.
+</ParamField>
+
+<ParamField path="accessKeyId" param-type="string" required="false">
+  Provider access key. Required for AWS S3, Cloudflare R2.
+</ParamField>
+
+<Callout kind="info">
+  Store credentials securely using environment variables, like `process.env.ACCESS_KEY_ID`.
+</Callout>
+
+## Quick Navigation
+
+<Columns cols={3}>
+  <Card title="Upload" icon="upload" href="#upload-methods">
+    Stream files to any provider.
+  </Card>
+  <Card title="Download" icon="download" href="#download-methods">
+    Retrieve objects efficiently.
+  </Card>
+  <Card title="Events" icon="bell" href="#event-handling">
+    Listen for progress and errors.
+  </Card>
+</Columns>
+
+## Upload Methods
+
+Upload files using `upload()` or `uploadStream()`. These methods return promises for async handling.
+
+<Tabs>
+  <Tab title="Single File" icon="file">
+    ```javascript
+    const result = await obitoX.upload('path/to/file.txt', './local-file.txt');
+    console.log(result.url); // https://bucket.example.com/file.txt
+    ```
+  </Tab>
+  <Tab title="Stream Upload" icon="activity">
+    ````javascript
+    const stream = fs.createReadStream('./large-file.mp4');
+    const result = await obitoX.uploadStream('videos/large.mp4', stream, {
+      metadata: { 'content-type': 'video/mp4' }
+    });
+    console.log(result.etag);
+    ````
+  </Tab>
+</Tabs>
+
+<ParamField body="key" param-type="string" required="true">
+  Destination object key in the bucket.
+</ParamField>
+
+<ParamField body="filePath" param-type="string" required="true">
+  Local file path or stream for upload.
+</ParamField>
+
+## Download Methods
+
+Download objects with `download()` or `downloadStream()`.
+
+<CodeGroup tabs="Download,Stream">
+```javascript
+const buffer = await obitoX.download('documents/report.pdf');
+fs.writeFileSync('./report.pdf', buffer);
+```
+
+```javascript
+const stream = obitoX.downloadStream('images/profile.jpg');
+stream.pipe(fs.createWriteStream('./profile.jpg'));
+```
+</CodeGroup>
+
+<ResponseField name="url" field-type="string" required="true">
+  Presigned URL for direct access (TTL: 1 hour).
+</ResponseField>
+
+<ResponseField name="etag" field-type="string">
+  Object ETag for integrity checks.
+</ResponseField>
+
+## Provider Configuration Options
+
+Switch providers dynamically or use custom endpoints.
+
+<Steps>
+  <Step title="S3/AWS" icon="cloud">
+    Set `provider: 's3'` and standard AWS creds.
+  </Step>
+  <Step title="Cloudflare R2" icon="globe">
+    Use `provider: 'r2'`, `accountId`, and custom `endpoint`.
+  </Step>
+  <Step title="Supabase" icon="database">
+    Provide `provider: 'supabase'`, `url`, and `anonKey`.
+  </Step>
+</Steps>
+
+## Event Handling
+
+Listen to upload/download events for progress tracking.
+
+```javascript
+obitoX.on('uploadProgress', (key, progress) => {
+  console.log(`Uploading {key}: {progress}%`);
+});
+
+obitoX.on('error', (error) => {
+  console.error('SDK error:', error.message);
+});
+```
+
+<Expandable title="Advanced Event Filters" default-open="false">
+  Filter events by provider or operation:
+
+  ```javascript
+  obitoX.on('progress', ({ provider, operation, progress }) => {
+    if (provider === 'r2' && operation === 'upload') {
+      // Handle R2-specific progress
+    }
+  });
+  ```
+</Expandable>
+
+## Async Operation Patterns
+
+Handle large files with async iterators or promises.
+
+```javascript
+// Promise-based
+try {
+  const result = await obitoX.upload('backup.tar.gz', './backup.tar.gz');
+} catch (error) {
+  // Retry logic here
+}
+
+// Async iterator for multi-part uploads
+for await (const chunk of obitoX.uploadIterator('huge-file.zip', stream)) {
+  console.log(`Uploaded chunk: {chunk.size} bytes`);
+}
+```
+
+<Callout kind="tip">
+  Always await promises or use try-catch for robust error handling in production.
+</Callout>
+
+<Columns cols={2}>
+  <Card title="Configuration" icon="settings" href="#provider-configuration-options">
+    Advanced provider setup.
+  </Card>
+  <Card title="Changelog" icon="git-branch" href="/changelog">
+    Latest SDK updates.
+  </Card>
+</Columns>

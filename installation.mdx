@@ -1,0 +1,151 @@
+---
+title: Installation Guide
+description: Install the ObitoX SDK quickly in your JavaScript or other supported projects using popular package managers.
+---
+
+## Prerequisites
+
+Before installing ObitoX, ensure your environment meets these requirements.
+
+<Callout kind="info">
+
+**System Requirements:**
+
+- Node.js `{>=18.0.0}`
+- npm `{>=8.0.0}` or yarn `{>=1.22.0}`
+- Supported platforms: macOS, Linux, Windows
+
+ObitoX works with any storage provider like AWS S3, Google Cloud Storage, or Azure Blob.
+
+</Callout>
+
+Verify your Node.js version:
+
+````bash
+node --version
+````
+
+## Installation Methods
+
+Install the ObitoX SDK using your preferred package manager. Choose the tab below for specific instructions.
+
+<Tabs>
+  <Tab title="npm" icon="package">
+    In your project directory, run:
+
+    ````bash
+    npm install @obitox/sdk
+    ````
+
+    This adds `@obitox/sdk` to your `package.json` dependencies.
+  </Tab>
+  <Tab title="yarn" icon="package">
+    In your project directory, run:
+
+    ````bash
+    yarn add @obitox/sdk
+    ````
+
+    Yarn will resolve and install the latest version.
+  </Tab>
+  <Tab title="pnpm" icon="package">
+    In your project directory, run:
+
+    ````bash
+    pnpm add @obitox/sdk
+    ````
+
+    pnpm offers efficient disk usage for monorepos.
+  </Tab>
+</Tabs>
+
+<Callout kind="tip">
+
+After installation, check your `node_modules/@obitox` directory to confirm the package exists.
+
+</Callout>
+
+## Peer Dependencies
+
+ObitoX has optional peer dependencies for enhanced features. Install them if needed:
+
+| Dependency | Purpose | Install Command |
+|------------|---------|-----------------|
+| `axios` | HTTP requests (fallback included) | `npm install axios` |
+| `@aws-sdk/client-s3` | AWS S3 support | `npm install @aws-sdk/client-s3` |
+| `@google-cloud/storage` | Google Cloud support | `npm install @google-cloud/storage` |
+
+These are not required for basic usage but recommended for provider-specific optimizations.
+
+## Verify Installation
+
+Follow these steps to test your installation.
+
+<Steps>
+  <Step title="Create a test file" icon="file">
+    Create `test-obitox.js`:
+
+    ````javascript
+    import { ObitoX } from '@obitox/sdk';
+
+    const client = new ObitoX({
+      apiKey: 'YOUR_API_KEY',
+      provider: 's3', // or 'gcs', 'azure'
+      endpoint: 'https://api.example.com'
+    });
+
+    console.log('ObitoX client initialized:', client);
+    ````
+  </Step>
+  <Step title="Run the test" icon="play">
+    Execute the script:
+
+    ````bash
+    node test-obitox.js
+    ````
+
+    You should see: `ObitoX client initialized: ObitoXClient { ... }`
+  </Step>
+  <Step title="Handle errors" icon="alert-triangle">
+    If you encounter import errors, clear your cache:
+
+    ````bash
+    npm cache clean --force
+    rm -rf node_modules package-lock.json
+    npm install
+    ````
+  </Step>
+</Steps>
+
+<CodeGroup tabs="CommonJS,ES Modules">
+  ```javascript
+  // CommonJS
+  const { ObitoX } = require('@obitox/sdk');
+  ```
+  ```javascript
+  // ES Modules (recommended)
+  import { ObitoX } from '@obitox/sdk';
+  ```
+</CodeGroup>
+
+## Next Steps
+
+With ObitoX installed, explore these resources:
+
+<Columns cols={3}>
+  <Card title="Quickstart" icon="zap" href="/quickstart">
+    Build your first storage operation in minutes.
+  </Card>
+  <Card title="Authentication" icon="lock" href="/authentication">
+    Secure your API key and tokens.
+  </Card>
+  <Card title="Configuration" icon="settings" href="/introduction">
+    Customize providers and endpoints.
+  </Card>
+</Columns>
+
+<Callout kind="success">
+
+Installation complete! Proceed to the Quickstart guide to upload your first file.
+
+</Callout>

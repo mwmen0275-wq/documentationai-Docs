@@ -1,0 +1,185 @@
+---
+title: Basic Usage
+description: Get hands-on with ObitoX by initializing the SDK and performing essential storage operations like uploading and downloading files.
+---
+
+## Overview
+
+ObitoX provides a unified interface for interacting with any storage provider. Initialize the SDK once, configure your preferred provider, and perform core operations like uploading, downloading, and listing files seamlessly.
+
+<Callout kind="tip">
+  Start with the initialization steps below, then choose your provider configuration.
+</Callout>
+
+## Initialize the SDK
+
+Follow these steps to get ObitoX up and running in your project.
+
+<Steps>
+  <Step title="Install ObitoX" icon="download">
+    Install the SDK using your package manager.
+
+    <CodeGroup tabs="npm,yarn,pnpm">
+      ````bash
+      npm install obitox
+      ````
+      ````bash
+      yarn add obitox
+      ````
+      ````bash
+      pnpm add obitox
+      ````
+    </CodeGroup>
+  </Step>
+
+  <Step title="Import and Initialize" icon="code">
+    Import the SDK and create a client instance.
+
+    <CodeGroup tabs="JavaScript,Python">
+      ````javascript
+      import { ObitoX } from 'obitox';
+
+      const client = new ObitoX({
+        provider: 's3', // Change based on your provider
+        accessKey: 'YOUR_ACCESS_KEY',
+        secretKey: 'YOUR_SECRET_KEY',
+        region: 'us-east-1',
+        bucket: 'my-bucket'
+      });
+      ````
+      ````python
+      from obitox import ObitoX
+
+      client = ObitoX(
+          provider="s3",
+          access_key="YOUR_ACCESS_KEY",
+          secret_key="YOUR_SECRET_KEY",
+          region="us-east-1",
+          bucket="my-bucket"
+      )
+      ````
+    </CodeGroup>
+  </Step>
+</Steps>
+
+## Configure Storage Providers
+
+ObitoX supports multiple providers out-of-the-box. Select your provider and supply the required credentials.
+
+<Tabs>
+  <Tab title="AWS S3" icon="cloud">
+    Use these parameters for Amazon S3 compatibility.
+
+    ````javascript
+    const client = new ObitoX({
+      provider: 's3',
+      accessKey: 'YOUR_ACCESS_KEY',
+      secretKey: 'YOUR_SECRET_KEY',
+      region: 'us-east-1',
+      bucket: 'my-app-bucket'
+    });
+    ````
+  </Tab>
+
+  <Tab title="Google Cloud Storage" icon="database">
+    Configure for Google Cloud Storage.
+
+    ````javascript
+    const client = new ObitoX({
+      provider: 'gcs',
+      projectId: 'your-project-id',
+      clientEmail: 'YOUR_SERVICE_ACCOUNT_EMAIL',
+      privateKey: 'YOUR_PRIVATE_KEY',
+      bucket: 'my-gcs-bucket'
+    });
+    ````
+  </Tab>
+
+  <Tab title="Supabase Storage" icon="package">
+    Set up with Supabase.
+
+    ````javascript
+    const client = new ObitoX({
+      provider: 'supabase',
+      url: 'https://your-project.supabase.co',
+      key: 'YOUR_ANON_KEY',
+      bucket: 'avatars'
+    });
+    ````
+  </Tab>
+</Tabs>
+
+<Callout kind="info">
+  Replace placeholders like `YOUR_ACCESS_KEY` with your actual credentials. Store them securely in environment variables.
+</Callout>
+
+## Upload Files
+
+Upload files to your configured bucket using the `upload` method. It returns the file URL on success.
+
+<CodeGroup tabs="JavaScript,Python">
+  ````javascript
+  const fileInput = document.querySelector('input[type="file"]');
+  const file = fileInput.files[0];
+
+  const result = await client.upload('avatar.jpg', file, {
+    contentType: 'image/jpeg',
+    metadata: { userId: '123' }
+  });
+
+  console.log('Uploaded:', result.url); // https://my-bucket.s3.amazonaws.com/avatar.jpg
+  ````
+  ````python
+  with open('avatar.jpg', 'rb') as f:
+      result = client.upload('avatar.jpg', f, {
+          'content_type': 'image/jpeg',
+          'metadata': {'user_id': '123'}
+      })
+
+  print('Uploaded:', result.url)
+  ````
+</CodeGroup>
+
+## Download Files
+
+Retrieve files with the `download` method, which returns a stream or buffer.
+
+<CodeGroup tabs="JavaScript,Python">
+  ````javascript
+  const stream = await client.download('avatar.jpg');
+  // Pipe to file or process stream
+  stream.pipe(fs.createWriteStream('downloaded-avatar.jpg'));
+  ````
+  ````python
+  stream = await client.download('avatar.jpg')
+  with open('downloaded-avatar.jpg', 'wb') as f:
+      f.write(stream.read())
+  ````
+</CodeGroup>
+
+## List Objects
+
+List files in your bucket using `list` with optional prefixes or pagination.
+
+````javascript
+const objects = await client.list({ prefix: 'avatars/', maxKeys: 10 });
+console.log(objects.map(obj => obj.key)); // ['avatars/user1.jpg', 'avatars/user2.jpg']
+````
+
+## Next Steps
+
+Explore more with these resources.
+
+<Columns cols={3}>
+  <Card title="Advanced Features" icon="zap" href="/advanced">
+    Dive into streaming, versioning, and ACLs.
+  </Card>
+
+  <Card title="Provider Reference" icon="database" href="/providers">
+    Full configuration for all supported providers.
+  </Card>
+
+  <Card title="Error Handling" icon="shield" href="/errors">
+    Robust error management and retries.
+  </Card>
+</Columns>

@@ -1,0 +1,23 @@
+---
+title: Can I use multiple storage providers?
+description: Learn how ObitoX lets you connect to any supported provider.
+---
+
+## Overview
+
+Yes! ObitoX is designed for provider flexibility. You can switch and use any supported cloud storage (e.g., AWS S3, Google Cloud Storage, Azure Blob) with a single SDK.
+
+## How?
+
+- Configure the provider you want in your code
+- Use the same interface for all providers
+- Seamlessly change providers by updating the config
+
+## Example
+
+```js
+import { ObitoX } from 'obitox';
+
+const sdk = new ObitoX({ provider: 'gcs', key: 'API_KEY' });
+```
+

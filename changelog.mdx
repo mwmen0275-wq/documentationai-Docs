@@ -1,0 +1,140 @@
+---
+title: Changelog
+description: Review the version history of ObitoX, including new features, bug fixes, and breaking changes.
+---
+
+## Recent Updates
+
+Stay up to date with the latest improvements to ObitoX, your universal SDK for storage providers. You access new features, performance enhancements, and fixes by updating to the latest version via your package manager.
+
+<Update label="2024-10-15" description="v1.2.0" tags={["improvement", "bugfix"]}>
+
+## Improvements
+
+- Optimized upload/download throughput by up to 40% for all providers using parallel chunking
+- Added configurable retry logic for transient network failures
+
+## Bug Fixes
+
+- Fixed race condition in multi-part uploads for Google Cloud Storage
+- Resolved authentication token refresh issues with Azure Blob Storage
+
+## Migration Notes
+
+No breaking changes. Update seamlessly with `npm update obitox`.
+
+</Update>
+
+<Update label="2024-09-20" description="v1.1.0" tags={["feature"]}>
+
+## New Features
+
+- Added support for Backblaze B2 and Wasabi providers
+- Introduced progress callbacks for long-running operations: `client.upload(file, { onProgress: (percent) => console.log(`{percent}%`) })`
+
+## Improvements
+
+- Enhanced error messages with provider-specific details
+- Reduced bundle size by 25% through tree-shaking optimizations
+
+</Update>
+
+<Update label="2024-08-10" description="v1.0.0" tags={["feature"]}>
+
+## Initial Release
+
+- Core SDK with support for AWS S3, Google Cloud Storage, and Azure Blob Storage
+- Unified API for list, upload, download, and delete operations across providers
+- Automatic provider detection from connection strings
+
+- TypeScript definitions included for full type safety
+
+</Update>
+
+## Migration Guide
+
+Migrating between versions is straightforward. Follow these steps to upgrade smoothly.
+
+<Steps>
+  <Step title="Check Current Version" icon="package">
+    Run the following to verify your installed version:
+    
+````bash
+npm list obitox
+````
+
+  </Step>
+  <Step title="Review Breaking Changes" icon="alert-triangle">
+    Scan the release notes above for any `{breaking}` tags. v1.2.0 and v1.1.0 have none.
+  </Step>
+  <Step title="Update Package" icon="download">
+    <Tabs>
+      <Tab title="npm" icon="npm">
+````bash
+npm install obitox@latest
+````
+      </Tab>
+      <Tab title="yarn" icon="yarn">
+````bash
+yarn add obitox@latest
+````
+      </Tab>
+    </Tabs>
+  </Step>
+  <Step title="Update Code" icon="code">
+    For v1.1.0+, use the new progress option:
+    
+    <CodeGroup tabs="Before,After">
+```javascript
+// Before v1.1.0
+client.upload('file.txt', 'bucket/file.txt');
+```
+
+```javascript
+// After v1.1.0
+client.upload('file.txt', 'bucket/file.txt', {
+  onProgress: (percent) => console.log(`Uploaded: ${percent}%`)
+});
+```
+    </CodeGroup>
+  </Step>
+  <Step title="Test Integration" icon="play">
+    Run your integration tests to confirm compatibility with your storage provider.
+  </Step>
+</Steps>
+
+<Callout kind="tip">
+  Pin exact versions in production with `npm install obitox@1.2.0` to avoid surprises.
+</Callout>
+
+## Quick Links
+
+<Columns cols={3}>
+  <Card title="GitHub Repository" icon="github" href="https://github.com/example/obitox" target="_blank">
+    View source code and contribute.
+  </Card>
+  <Card title="Report a Bug" icon="bug" href="https://github.com/example/obitox/issues/new" target="_blank">
+    File issues with reproduction steps.
+  </Card>
+  <Card title="Request Feature" icon="sparkles" href="https://github.com/example/obitox/discussions" target="_blank">
+    Suggest new providers or features.
+  </Card>
+</Columns>
+
+## Reporting Issues
+
+Encounter a problem? You help the team resolve it faster by providing detailed reproduction steps, your provider details (without secrets), ObitoX version, and Node.js version.
+
+<Callout kind="info">
+  Search existing issues first at [GitHub Issues](https://github.com/example/obitox/issues). Include code like this in your report:
+  
+  ````javascript
+  const client = new ObitoX({
+    provider: 's3',
+    apiKey: 'YOUR_API_KEY'
+  });
+  client.upload('test.txt', 'my-bucket/test.txt').catch(console.error);
+  ````
+</Callout>
+
+Check the [Introduction](/introduction) for setup basics if starting fresh.

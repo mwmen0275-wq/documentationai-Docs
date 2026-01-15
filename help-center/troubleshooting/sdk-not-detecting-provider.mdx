@@ -1,0 +1,26 @@
+---
+title: SDK Not Detecting Provider
+description: Fix provider detection errors in ObitoX.
+---
+
+## Symptoms
+- `Provider not supported` error
+- SDK returns null on initialization
+
+## Causes
+- Provider config missing or misspelled
+- Incorrect provider value
+
+## Solution
+<Steps>
+  <Step title="Check provider string">
+    ````js
+    // Correct example:
+    new ObitoX({ provider: 's3' })
+    // Not: provider: 'aws-s3' or 'amazon'
+    ````
+  </Step>
+  <Step title="Verify SDK version">
+    Update to latest `obitox` to ensure provider support.
+  </Step>
+</Steps>

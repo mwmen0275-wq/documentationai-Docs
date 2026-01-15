@@ -1,0 +1,27 @@
+---
+title: Quick Start: Upload a File
+description: Upload your first file with ObitoX SDK.
+---
+
+## Overview
+
+Upload files to any provider with just a few lines.
+
+<Steps>
+  <Step title="Install ObitoX">
+    ````bash
+    npm install obitox
+    ````
+  </Step>
+  <Step title="Initialize SDK">
+    ````js
+    const { ObitoX } = require('obitox');
+    const sdk = new ObitoX({ provider: 's3', key: 'API_KEY' });
+    ````
+  </Step>
+  <Step title="Upload a file">
+    ````js
+    await sdk.upload('photo.png', fs.readFileSync('photo.png'));
+    ````
+  </Step>
+</Steps>
